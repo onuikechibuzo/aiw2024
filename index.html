@@ -102,6 +102,16 @@
     <button id="shareFlyer" style="display: none;">Share Flyer</button>
 </div>
 
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-EBS9HW2FR4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-EBS9HW2FR4');
+</script>
+    
 <script>
     document.getElementById('generateFlyer').addEventListener('click', function() {
         const name = document.getElementById('name').value;
