@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Attendance Flyer Generator</title>
+    <title>Anambra Innovation Week - Flyer Generator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -57,27 +57,39 @@
             border: 2px solid #00796b;
             border-radius: 10px;
         }
+        .intro-text, .links-section {
+            text-align: left;
+            margin-top: 20px;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Generate Your "I am attending" Flyer</h2>
+    <h2>Anambra Innovation Week 2024 - "I am attending" Flyer Generator</h2>
+
+    <div class="intro-text">
+        <p>
+            The primary mission of this site is to spotlight the Anambra Innovation Week, hosted by Solution Innovation District. 
+            With a goal to reach 20,000 innovators from Anambra, Nigeria, and beyond, this event empowers participants to connect, learn, and stand a chance 
+            to win over 100 million Naira ($60,000) in awards! 
+        </p>
+        <p>
+            The 2024 Innovation Week is dedicated to driving progress in technology and digital transformation, especially in tackling socio-economic challenges across Africa. 
+            The centerpiece event, "Battle 4 Solutions," calls upon innovators, entrepreneurs, and tech enthusiasts to create practical solutions for pressing issues in diverse sectors.
+        </p>
+    </div>
+
+    <div class="links-section">
+        <p><a href="https://innovationweek.anambrastate.gov.ng/" onclick="trackEvent('Link', 'click', 'Learn More')" target="_blank">Learn more about the event</a></p>
+        <p><a href="https://docs.google.com/forms/d/e/1FAIpQLSfeLfS5mSODTkLfnzXvUf4avcNjvZ0goIWd84fbSlWCRywxow/viewform?pli=1" onclick="trackEvent('Link', 'click', 'Register')" target="_blank">Register for the Program</a></p>
+        <p><a href="https://innovationweek.anambrastate.gov.ng/battle4solutions/" onclick="trackEvent('Link', 'click', 'Apply for Battle4Solutions')" target="_blank">Apply for Battle4Solutions</a></p>
+    </div>
+
     <div class="form-group">
         <label for="name">Name:</label>
         <input type="text" id="name" placeholder="Enter your name">
-    </div>
-    <div class="form-group">
-        <label for="role">Are you coming as a:</label>
-        <select id="role">
-            <option value="Competitor">Competitor</option>
-            <option value="Partner">Partner</option>
-            <option value="Sponsor">Sponsor</option>
-            <option value="Exhibitor">Exhibitor</option>
-            <option value="Volunteer">Volunteer</option>
-            <option value="Speaker">Speaker</option>
-            <option value="Attendee">Attendee</option>
-        </select>
     </div>
     <div class="form-group">
         <label for="description">What best describes you?</label>
@@ -96,72 +108,65 @@
         <label for="imageUpload">Upload Image:</label>
         <input type="file" id="imageUpload" accept="image/*">
     </div>
-    <button id="generateFlyer">Generate Flyer</button>
+    <button id="generateFlyer" onclick="trackEvent('Button', 'click', 'Generate Flyer')">Generate Flyer</button>
     <canvas id="flyerCanvas" width="500" height="700"></canvas>
-    <a id="downloadLink" style="display: none; margin-top: 10px;">Download Flyer</a>
-    <button id="shareFlyer" style="display: none;">Share Flyer</button>
+    <a id="downloadLink" style="display: none; margin-top: 10px;" onclick="trackEvent('Button', 'click', 'Download Flyer')">Download Flyer</a>
+    <button id="shareFlyer" style="display: none;" onclick="trackEvent('Button', 'click', 'Share Flyer')">Share Flyer</button>
 </div>
 
-<!-- Google tag (gtag.js) -->
+<!-- Google Analytics Tag -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-EBS9HW2FR4"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-EBS9HW2FR4');
 </script>
-    
+
 <script>
+    function trackEvent(category, action, label) {
+        gtag('event', action, {
+            'event_category': category,
+            'event_label': label
+        });
+    }
+
     document.getElementById('generateFlyer').addEventListener('click', function() {
         const name = document.getElementById('name').value;
-        const role = document.getElementById('role').value;
         const description = document.getElementById('description').value;
         const imageUpload = document.getElementById('imageUpload').files[0];
         const canvas = document.getElementById('flyerCanvas');
         const ctx = canvas.getContext('2d');
-        const combinedCategory = `${description} ${role}`;
-        
-        if (name && role && description && imageUpload) {
-            // Load the background image
+
+        if (name && description && imageUpload) {
             const backgroundImage = new Image();
-            backgroundImage.src = 'IMG-20241106-WA0017.jpg?text=Event+Flyer+Background'; // Replace with your image URL
+            backgroundImage.src = 'IMG-20241106-WA0017.jpg';
             backgroundImage.onload = function() {
                 canvas.width = backgroundImage.width;
                 canvas.height = backgroundImage.height;
 
-                // Draw background image on canvas
                 ctx.drawImage(backgroundImage, 0, 0, backgroundImage.width, backgroundImage.height);
-
-                // Set text styles and positions
                 ctx.fillStyle = "black";
                 ctx.font = "bold 50px Arial";
-                //ctx.textAlign = "center";
-                
-                // Draw name
                 ctx.fillText(name, 272, 343);
-                
-                // Draw combined category (e.g., "Student Competitor")
+
                 ctx.fillStyle = "#FF7F27";
                 ctx.font = "50px Arial";
-                ctx.fillText(combinedCategory, 257, 282);
+                ctx.fillText(description, 257, 282);
 
-                // Load and draw uploaded user image
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const img = new Image();
                     img.onload = function() {
-                        // Position the uploaded image at specific coordinates on the canvas
                         ctx.drawImage(img, 684, 231, 177, 251);
-                        
-                        // Show canvas, download link, and share button
                         canvas.style.display = "block";
+
                         const downloadLink = document.getElementById('downloadLink');
                         downloadLink.href = canvas.toDataURL("image/png");
                         downloadLink.download = "AttendanceFlyer.png";
                         downloadLink.style.display = "inline";
                         downloadLink.textContent = "Download Flyer";
-                        
+
                         const shareButton = document.getElementById('shareFlyer');
                         shareButton.style.display = "inline";
                     };
@@ -176,22 +181,14 @@
 
     document.getElementById('shareFlyer').addEventListener('click', function() {
         const canvas = document.getElementById('flyerCanvas');
-        
-        // Convert the canvas to a data URL
         canvas.toBlob(blob => {
             const file = new File([blob], "AttendanceFlyer.png", { type: "image/png" });
-            
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
                 navigator.share({
                     files: [file],
-                    title: "I'm attending the event!",
-                    text: "Join me at the Anambra Innovation Week! I’ll be participating as a " + document.getElementById('description').value + " " + document.getElementById('role').value + ". Hope to see you there!",
+                    title: "I'm attending Anambra Innovation Week!",
+                    text: `Join me at the Anambra Innovation Week! I’m attending as a ${document.getElementById('description').value}.`,
                 }).catch(error => console.error("Sharing failed:", error));
-            } else {
-                const text = `I'm attending the Anambra Innovation Week! I’ll be participating as a ${document.getElementById('description').value} ${document.getElementById('role').value}. Hope to see you there!`;
-                const encodedText = encodeURIComponent(text);
-                const whatsappUrl = `https://wa.me/?text=${encodedText}`;
-                window.open(whatsappUrl, '_blank');
             }
         });
     });
