@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Attendance Flyer Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        #generateFlyer, #shareFlyer {
+            background-color: #00796b;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        #shareFlyer {
+            background-color: #2196f3;
+        }
+        canvas {
+            display: none;
+            margin-top: 20px;
+            border: 2px solid #00796b;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Generate Your "I am attending" Flyer</h2>
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" placeholder="Enter your name">
+    </div>
+    <div class="form-group">
+        <label for="role">Are you coming as a:</label>
+        <select id="role">
+            <option value="Competitor">Competitor</option>
+            <option value="Partner">Partner</option>
+            <option value="Sponsor">Sponsor</option>
+            <option value="Exhibitor">Exhibitor</option>
+            <option value="Volunteer">Volunteer</option>
+            <option value="Speaker">Speaker</option>
+            <option value="Attendee">Attendee</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="description">What best describes you?</label>
+        <select id="description">
+            <option value="Student">Student</option>
+            <option value="Freelancer">Freelancer</option>
+            <option value="Entrepreneur/Self-Employed">Entrepreneur/Self-Employed</option>
+            <option value="Founder/CEO">Founder/CEO</option>
+            <option value="Working Professional">Working Professional</option>
+            <option value="Researcher">Researcher</option>
+            <option value="Lecturer/Professor">Lecturer/Professor</option>
+            <option value="Civil Servant">Civil Servant</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="imageUpload">Upload Image:</label>
+        <input type="file" id="imageUpload" accept="image/*">
+    </div>
+    <button id="generateFlyer">Generate Flyer</button>
+    <canvas id="flyerCanvas" width="500" height="700"></canvas>
+    <a id="downloadLink" style="display: none; margin-top: 10px;">Download Flyer</a>
+    <button id="shareFlyer" style="display: none;">Share Flyer</button>
+</div>
+
+<script>
+    document.getElementById('generateFlyer').addEventListener('click', function() {
+        const name = document.getElementById('name').value;
+        const role = document.getElementById('role').value;
+        const description = document.getElementById('description').value;
+        const imageUpload = document.getElementById('imageUpload').files[0];
+        const canvas = document.getElementById('flyerCanvas');
+        const ctx = canvas.getContext('2d');
+        const combinedCategory = `${description} ${role}`;
+        
+        if (name && role && description && imageUpload) {
+            // Load the background image
+            const backgroundImage = new Image();
+            backgroundImage.src = 'IMG-20241106-WA0017.jpg?text=Event+Flyer+Background'; // Replace with your image URL
+            backgroundImage.onload = function() {
+                canvas.width = backgroundImage.width;
+                canvas.height = backgroundImage.height;
+
+                // Draw background image on canvas
+                ctx.drawImage(backgroundImage, 0, 0, backgroundImage.width, backgroundImage.height);
+
+                // Set text styles and positions
+                ctx.fillStyle = "black";
+                ctx.font = "bold 50px Arial";
+                //ctx.textAlign = "center";
+                
+                // Draw name
+                ctx.fillText(name, 272, 343);
+                
+                // Draw combined category (e.g., "Student Competitor")
+                ctx.fillStyle = "#FF7F27";
+                ctx.font = "50px Arial";
+                ctx.fillText(combinedCategory, 257, 282);
+
+                // Load and draw uploaded user image
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        // Position the uploaded image at specific coordinates on the canvas
+                        ctx.drawImage(img, 684, 231, 177, 251);
+                        
+                        // Show canvas, download link, and share button
+                        canvas.style.display = "block";
+                        const downloadLink = document.getElementById('downloadLink');
+                        downloadLink.href = canvas.toDataURL("image/png");
+                        downloadLink.download = "AttendanceFlyer.png";
+                        downloadLink.style.display = "inline";
+                        downloadLink.textContent = "Download Flyer";
+                        
+                        const shareButton = document.getElementById('shareFlyer');
+                        shareButton.style.display = "inline";
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(imageUpload);
+            };
+        } else {
+            alert('Please fill in all fields and upload an image.');
+        }
+    });
+
+    document.getElementById('shareFlyer').addEventListener('click', function() {
+        const canvas = document.getElementById('flyerCanvas');
+        
+        // Convert the canvas to a data URL
+        canvas.toBlob(blob => {
+            const file = new File([blob], "AttendanceFlyer.png", { type: "image/png" });
+            
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                navigator.share({
+                    files: [file],
+                    title: "I'm attending the event!",
+                    text: "Join me at the Anambra Innovation Week! I’ll be participating as a " + document.getElementById('description').value + " " + document.getElementById('role').value + ". Hope to see you there!",
+                }).catch(error => console.error("Sharing failed:", error));
+            } else {
+                const text = `I'm attending the Anambra Innovation Week! I’ll be participating as a ${document.getElementById('description').value} ${document.getElementById('role').value}. Hope to see you there!`;
+                const encodedText = encodeURIComponent(text);
+                const whatsappUrl = `https://wa.me/?text=${encodedText}`;
+                window.open(whatsappUrl, '_blank');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
