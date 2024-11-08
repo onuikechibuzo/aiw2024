@@ -137,6 +137,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             font-size: 16px;
 
         }
+        /* Add this CSS to fit the canvas for display only */
+canvas {
+    display: none;
+    margin-top: 20px;
+    border: 2px solid #00796b;
+    border-radius: 10px;
+    max-width: 100%; /* Ensures the canvas scales within its container */
+    height: auto;    /* Maintains aspect ratio while fitting */
+}
 
     </style>
 
