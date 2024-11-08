@@ -1,136 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-WNGMCCLV');</script>
-<!-- End Google Tag Manager -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anambra Innovation Week - Flyer Generator</title>
+    <title>Flyer Generator</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
+        /* Style to fit canvas within a set display size */
+        .canvas-container {
+            max-width: 500px; /* Set your desired max display width */
+            margin: 0 auto;
+            overflow: hidden;
         }
-        .container {
-            max-width: 600px;
-            width: 100%;
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            text-align: center;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            font-weight: bold;
-            margin-bottom: 5px;
-            display: block;
-        }
-        input[type="text"], select {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        #generateFlyer, #shareFlyer {
-            background-color: #00796b;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 10px;
-        }
-        #shareFlyer {
-            background-color: #2196f3;
-        }
-        canvas {
-            display: none;
-            margin-top: 20px;
-            border: 2px solid #00796b;
-            border-radius: 10px;
-        }
-        .intro-text, .links-section {
-            text-align: left;
-            margin-top: 20px;
-            font-size: 16px;
+
+        #flyerCanvas {
+            transform: scale(0.7); /* Adjust scale to fit within container */
+            transform-origin: top left;
         }
     </style>
 </head>
 <body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WNGMCCLV"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
-<div class="container">
-    <h2>Anambra Innovation Week 2024 - "I am attending" Flyer Generator</h2>
 
-    <div class="intro-text">
-        <p>
-            The primary mission of this site is to spotlight the Anambra Innovation Week, hosted by Solution Innovation District. 
-            With a goal to reach 20,000 innovators from Anambra, Nigeria, and beyond, this event empowers participants to connect, learn, and stand a chance 
-            to win over 100 million Naira ($60,000) in awards! 
-        </p>
-        <p>
-            The 2024 Innovation Week is dedicated to driving progress in technology and digital transformation, especially in tackling socio-economic challenges across Africa. 
-            The centerpiece event, "Battle 4 Solutions," calls upon innovators, entrepreneurs, and tech enthusiasts to create practical solutions for pressing issues in diverse sectors.
-        </p>
-    </div>
-
-    <div class="links-section">
-        <p><a href="https://innovationweek.anambrastate.gov.ng/" onclick="trackEvent('Link', 'click', 'Learn More')" target="_blank">Learn more about the event</a></p>
-        <p><a href="https://docs.google.com/forms/d/e/1FAIpQLSfeLfS5mSODTkLfnzXvUf4avcNjvZ0goIWd84fbSlWCRywxow/viewform?pli=1" onclick="trackEvent('Link', 'click', 'Register')" target="_blank">Register for the Program</a></p>
-        <p><a href="https://innovationweek.anambrastate.gov.ng/battle4solutions/" onclick="trackEvent('Link', 'click', 'Apply for Battle4Solutions')" target="_blank">Apply for Battle4Solutions</a></p>
-    </div>
-
-    <div class="form-group">
-        <label for="name">Name:</label>
-        <input type="text" id="name" placeholder="Enter your name">
-    </div>
-    <div class="form-group">
-        <label for="description">What best describes you?</label>
-        <select id="description">
-            <option value="Student">Student</option>
-            <option value="Freelancer">Freelancer</option>
-            <option value="Entrepreneur/Self-Employed">Entrepreneur/Self-Employed</option>
-            <option value="Founder/CEO">Founder/CEO</option>
-            <option value="Working Professional">Working Professional</option>
-            <option value="Researcher">Researcher</option>
-            <option value="Lecturer/Professor">Lecturer/Professor</option>
-            <option value="Civil Servant">Civil Servant</option>
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="imageUpload">Upload Image:</label>
-        <input type="file" id="imageUpload" accept="image/*">
-    </div>
-    <button id="generateFlyer" onclick="trackEvent('Button', 'click', 'Generate Flyer')">Generate Flyer</button>
-    <canvas id="flyerCanvas" width="500" height="700"></canvas>
-    <a id="downloadLink" style="display: none; margin-top: 10px;" onclick="trackEvent('Button', 'click', 'Download Flyer')">Download Flyer</a>
-    <button id="shareFlyer" style="display: none;" onclick="trackEvent('Button', 'click', 'Share Flyer')">Share Flyer</button>
+<div class="links-section">
+    <p><a href="https://innovationweek.anambrastate.gov.ng/" onclick="trackEvent('Link', 'click', 'Learn More')" target="_blank">Learn more about the event</a></p>
+    <p><a href="https://docs.google.com/forms/d/e/1FAIpQLSfeLfS5mSODTkLfnzXvUf4avcNjvZ0goIWd84fbSlWCRywxow/viewform?pli=1" onclick="trackEvent('Link', 'click', 'Register')" target="_blank">Register for the Program</a></p>
+    <p><a href="https://innovationweek.anambrastate.gov.ng/battle4solutions/" onclick="trackEvent('Link', 'click', 'Apply for Battle4Solutions')" target="_blank">Apply for Battle4Solutions</a></p>
 </div>
+
+<div class="form-group">
+    <label for="name">Name:</label>
+    <input type="text" id="name" placeholder="Enter your name">
+</div>
+<div class="form-group">
+    <label for="description">What best describes you?</label>
+    <select id="description">
+        <option value="Student">Student</option>
+        <option value="Freelancer">Freelancer</option>
+        <option value="Entrepreneur/Self-Employed">Entrepreneur/Self-Employed</option>
+        <option value="Founder/CEO">Founder/CEO</option>
+        <option value="Working Professional">Working Professional</option>
+        <option value="Researcher">Researcher</option>
+        <option value="Lecturer/Professor">Lecturer/Professor</option>
+        <option value="Civil Servant">Civil Servant</option>
+    </select>
+</div>
+<div class="form-group">
+    <label for="imageUpload">Upload Image:</label>
+    <input type="file" id="imageUpload" accept="image/*">
+</div>
+<button id="generateFlyer" onclick="trackEvent('Button', 'click', 'Generate Flyer')">Generate Flyer</button>
+<div class="canvas-container">
+    <canvas id="flyerCanvas" width="500" height="700"></canvas>
+</div>
+<a id="downloadLink" style="display: none; margin-top: 10px;" onclick="trackEvent('Button', 'click', 'Download Flyer')">Download Flyer</a>
+<button id="shareFlyer" style="display: none;" onclick="trackEvent('Button', 'click', 'Share Flyer')">Share Flyer</button>
 
 <!-- Google Analytics Tag -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-EBS9HW2FR4"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-EBS9HW2FR4');
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-EBS9HW2FR4');
 </script>
 
 <script>
@@ -152,10 +82,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             const backgroundImage = new Image();
             backgroundImage.src = 'IMG-20241106-WA0017.jpg';
             backgroundImage.onload = function() {
-                canvas.width = backgroundImage.width;
-                canvas.height = backgroundImage.height;
+                // Draw the background image
+                ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
 
-                ctx.drawImage(backgroundImage, 0, 0, backgroundImage.width, backgroundImage.height);
+                // Draw text and uploaded image
                 ctx.fillStyle = "black";
                 ctx.font = "bold 50px Arial";
                 ctx.fillText(name, 272, 343);
